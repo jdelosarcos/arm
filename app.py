@@ -4,6 +4,13 @@ import pandas as pd
 st.title("Market Basket Analysis Dashboard")
 st.write("Analyze customer purchasing patterns and discover product associations")
 
+# File Upload Section
+st.sidebar.header("Upload Your Dataset")
+uploaded_file = st.sidebar.file_uploader(
+    "Choose a CSV or Excel file",
+    type=["csv", "xls", "xlsx"]
+)
+
 # Helper Functions
 
 def preprocess_data(df):
@@ -125,3 +132,15 @@ def load_data(file):
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
         return None
+
+# Use the uploaded file
+if uploaded_file is not None:
+    processed_df = load_data(uploaded_file)
+    if processed_df is not None:
+        st.subheader("Preprocessed Data Sample")
+        st.write(processed_df.head())
+        st.success("Data uploaded and preprocessed successfully.")
+    else:
+        st.error("Failed to preprocess the uploaded data.")
+else:
+    st.info("Please upload a CSV or Excel dataset to get started.")
