@@ -133,6 +133,43 @@ def load_data(file):
         st.error(f"Error loading data: {str(e)}")
         return None
 
+def display_statistics(df):
+    """
+    Display basic statistics and behavior of the preprocessed data.
+    Shows item frequency, transaction statistics, and heatmaps.
+    """
+    st.subheader("Statistical Overview of Data")
+    st.markdown("**Item Frequency (Number of Transactions Each Item Appears In):**")
+    item_freq = df.sum().sort_values(ascending=False)
+    st.bar_chart(item_freq)
+
+    st.markdown("**Transaction Size Distribution (Number of Items per Transaction):**")
+    transaction_size = df.sum(axis=1)
+    st.line_chart(transaction_size.value_counts().sort_index())
+
+    st.markdown("**Basic Statistics:**")
+    stats_data = {
+        "Number of Transactions": df.shape[0],
+        "Number of Unique Items": df.shape[1],
+        "Average Items per Transaction": transaction_size.mean(),
+        "Max Items in a Transaction": transaction_size.max(),
+        "Min Items in a Transaction": transaction_size.min(),
+        "Most Frequent Item": item_freq.idxmax(),
+        "Least Frequent Item": item_freq.idxmin()
+    }
+    st.table(pd.DataFrame(stats_data, index=["Value"]).T)
+
+    # Optional: Show correlation heatmap
+    st.markdown("**Item Correlation Heatmap:**")
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    corr = df.corr()
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.heatmap(corr, ax=ax, cmap="YlGnBu", center=0)
+    st.pyplot(fig)
+
 # Use the uploaded file
 if uploaded_file is not None:
     processed_df = load_data(uploaded_file)
@@ -140,6 +177,9 @@ if uploaded_file is not None:
         st.subheader("Preprocessed Data Sample")
         st.write(processed_df.head())
         st.success("Data uploaded and preprocessed successfully.")
+
+        # Display statistical behavior of the data
+        display_statistics(processed_df)
     else:
         st.error("Failed to preprocess the uploaded data.")
 else:
