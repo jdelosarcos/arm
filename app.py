@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+
+# Ensure required packages are installed before importing seaborn/matplotlib
 import subprocess
 import sys
 
@@ -8,6 +10,9 @@ for pkg in ["seaborn", "matplotlib"]:
         __import__(pkg)
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
+
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 st.title("Market Basket Analysis Dashboard")
 st.write("Analyze customer purchasing patterns and discover product associations")
@@ -169,10 +174,6 @@ def display_statistics(df):
 
     # Optional: Show correlation heatmap
     st.markdown("**Item Correlation Heatmap:**")
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     corr = df.corr()
     fig, ax = plt.subplots(figsize=(8, 6))
     sns.heatmap(corr, ax=ax, cmap="YlGnBu", center=0)
