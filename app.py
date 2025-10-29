@@ -1,5 +1,13 @@
 import streamlit as st
 import pandas as pd
+import subprocess
+import sys
+
+for pkg in ["seaborn", "matplotlib"]:
+    try:
+        __import__(pkg)
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", pkg])
 
 st.title("Market Basket Analysis Dashboard")
 st.write("Analyze customer purchasing patterns and discover product associations")
