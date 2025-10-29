@@ -1,16 +1,11 @@
+import streamlit as st
+import pandas as pd
 
 st.title("Market Basket Analysis Dashboard")
 st.write("Analyze customer purchasing patterns and discover product associations")
 
 # Helper Functions
-def load_data(file):
-    """Load and preprocess the data."""
-    df = pd.read_csv(file, index_col=0)  # Skip the first column (transaction ID)
-    
-    # Convert string 'True'/'False' to boolean if needed
-    for column in df.columns:
-        if df[column].dtype == object:
-            df[column] = df[column].map({'True': True, 'False': False})
+
 def preprocess_data(df):
     """
     Preprocess data to make it suitable for apriori algorithm.
@@ -75,12 +70,14 @@ def preprocess_data(df):
 
     return None
 
-# Updated load_data function
+def validate_data(df):
+    """Validate that data contains only binary values."""
+    return ((df == 0) | (df == 1)).all().all()
+
 def load_data(file):
     """
     Load and preprocess the data file.
     
-    return df
     Args:
         file: Uploaded file object
     Returns:
@@ -128,10 +125,3 @@ def load_data(file):
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
         return None
-
-def validate_data(df):
-    """Validate that data contains only binary values."""
-    return ((df == 0) | (df == 1)).all().all()
-
-def validate_data(df):
-    """Validate that data contains only 0s and 1s."""
